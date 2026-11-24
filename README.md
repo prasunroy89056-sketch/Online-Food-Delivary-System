@@ -62,10 +62,6 @@ online-food-delivery-system/
 
 Follow these steps to run the project locally on your computer:
 
-Clone the repository
-
-git clone https://github.com/your-username/online-food-delivery-system.git
-
 
 Navigate to the project directory
 
