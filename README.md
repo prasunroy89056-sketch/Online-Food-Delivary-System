@@ -86,6 +86,7 @@ Before screenshot without all product pictures....
 
 After Screenshot with all product pictures..... 
 
+<img width="1357" height="670" alt="image" src="https://github.com/user-attachments/assets/2159df25-3f94-4ba7-bb81-5e826b952a72" />
 
 
 
