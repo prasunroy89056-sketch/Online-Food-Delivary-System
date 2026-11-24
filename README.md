@@ -80,9 +80,14 @@ Open the folder in VS Code and launch it using the Live Server extension.
 
 📸 Screenshots
 
-(You can add screenshots of your homepage, menu section, and order form here after uploading them to an images/ or screenshots/ folder.)
+Before screenshot without all product pictures....
 
-![Home Page](images/screenshot-home.png)
+<img width="1360" height="633" alt="image" src="https://github.com/user-attachments/assets/440becf1-3e4e-4fe2-a408-1b5f27de279d" />
+
+After Screenshot with all product pictures..... 
+
+
+
 
 
 🔮 Future Improvements
