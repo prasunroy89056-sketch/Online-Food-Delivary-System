@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiteExpress - Online Food Delivery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-50 top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center cursor-pointer">
+                    <i class="fas fa-hamburger text-orange-500 text-2xl mr-2"></i>
+                    <span class="font-bold text-xl tracking-tight">BiteExpress</span>
+                </div>
+                <div class="flex items-center">
+                    <button id="cartBtn" class="relative p-2 text-gray-600 hover:text-orange-500 transition">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span id="cartBadge" class="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transform translate-x-1 -translate-y-1 hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="pt-24 pb-12 bg-orange-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Delicious Food, <span class="text-orange-500">Delivered Fast</span></h1>
+            <p class="text-lg text-gray-600 mb-8">Choose from our wide range of premium dishes and get them delivered to your doorstep.</p>
+        </div>
+    </div>
+
+    <!-- Menu Section -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h2 class="text-2xl font-bold mb-8 border-b pb-2">Our Menu</h2>
+        
+        <!-- Category Filter -->
+        <div class="flex space-x-4 mb-8 overflow-x-auto pb-2" id="categoryFilter">
+            <button class="filter-btn bg-orange-500 text-white px-4 py-2 rounded-full font-medium active" data-category="all">All</button>
+            <button class="filter-btn bg-white text-gray-600 border px-4 py-2 rounded-full font-medium hover:bg-gray-100" data-category="burger">Burgers</button>
+            <button class="filter-btn bg-white text-gray-600 border px-4 py-2 rounded-full font-medium hover:bg-gray-100" data-category="pizza">Pizzas</button>
+            <button class="filter-btn bg-white text-gray-600 border px-4 py-2 rounded-full font-medium hover:bg-gray-100" data-category="asian">Asian</button>
+        </div>
+
+        <!-- Food Grid -->
+        <div id="foodGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Items injected by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cartSidebar" class="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col">
+        <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+            <h2 class="text-lg font-bold">Your Order</h2>
+            <button id="closeCartBtn" class="text-gray-500 hover:text-red-500">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <!-- Cart items injected here -->
+            <div id="emptyCartMsg" class="text-center text-gray-500 mt-10">Your cart is empty</div>
+        </div>
+
+        <div class="p-4 border-t bg-gray-50">
+            <div class="flex justify-between mb-2 text-sm text-gray-600">
+                <span>Subtotal</span>
+                <span id="subtotalPrice">₹0.00</span>
+            </div>
+            <div class="flex justify-between mb-2 text-sm text-gray-600">
+                <span>Delivery Fee</span>
+                <span id="deliveryPrice">₹0.00</span>
+            </div>
+            <div class="flex justify-between font-bold text-lg mb-4">
+                <span>Total</span>
+                <span id="totalPrice">₹0.00</span>
+            </div>
+            <button id="checkoutBtn" class="w-full bg-orange-500 text-white py-3 rounded-lg font-bold hover:bg-orange-600 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 transition-opacity"></div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+        <div class="bg-white rounded-lg shadow-xl p-8 max-w-sm w-full text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-2xl text-green-500"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Order Confirmed!</h3>
+            <p class="text-gray-600 mb-6">Your delicious food is being prepared and will arrive soon.</p>
+            <button id="closeModalBtn" class="w-full bg-orange-500 text-white py-2 rounded-lg font-medium hover:bg-orange-600">
+                Back to Menu
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Data structure for the menu
+        const menuItems = [
+            { id: 1, name: "Classic Cheeseburger", price: 299, category: "burger", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80" },
+            { id: 2, name: "Double Smash Burger", price: 399, category: "burger", image: "Burger.jpg" },
+            { id: 3, name: "Margherita Pizza", price: 449, category: "pizza", image: "pizza.jpg" },
+            { id: 4, name: "Pepperoni Feast", price: 549, category: "pizza", image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&q=80" },
+            { id: 5, name: "Spicy Ramen", price: 349, category: "asian", image: "https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=500&q=80" },
+            { id: 6, name: "Sushi Platter", price: 799, category: "asian", image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500&q=80" },
+            { id: 7, name: "Veggie Supreme Pizza", price: 499, category: "pizza", image: "https://images.unsplash.com/photo-1590947132387-155cc02f3212?w=500&q=80" },
+            { id: 8, name: "Chicken Teriyaki Bowl", price: 429, category: "asian", image: "chicken.jpg" }
+        ];
+
+        let cart = [];
+        const DELIVERY_FEE = 40;
+
+        // DOM Elements
+        const foodGrid = document.getElementById('foodGrid');
+        const cartBtn = document.getElementById('cartBtn');
+        const closeCartBtn = document.getElementById('closeCartBtn');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const overlay = document.getElementById('overlay');
+        const cartItemsContainer = document.getElementById('cartItems');
+        const emptyCartMsg = document.getElementById('emptyCartMsg');
+        const cartBadge = document.getElementById('cartBadge');
+        const subtotalPriceEl = document.getElementById('subtotalPrice');
+        const deliveryPriceEl = document.getElementById('deliveryPrice');
+        const totalPriceEl = document.getElementById('totalPrice');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const successModal = document.getElementById('successModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        // Initialization
+        function init() {
+            renderMenu('all');
+            setupEventListeners();
+        }
+
+        // Render Menu Items
+        function renderMenu(category) {
+            foodGrid.innerHTML = '';
+            const filteredMenu = category === 'all' ? menuItems : menuItems.filter(item => item.category === category);
+            
+            filteredMenu.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition-shadow';
+                card.innerHTML = `
+                    <div class="h-48 overflow-hidden">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-gray-800">${item.name}</h3>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-orange-500 font-bold text-xl">₹${item.price}</span>
+                            <button onclick="addToCart(${item.id})" class="bg-orange-100 text-orange-600 p-2 rounded-full hover:bg-orange-500 hover:text-white transition-colors">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                foodGrid.appendChild(card);
+            });
+        }
+
+        // Cart Logic
+        window.addToCart = function(id) {
+            const item = menuItems.find(i => i.id === id);
+            const existingItem = cart.find(i => i.id === id);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...item, quantity: 1 });
+            }
+            
+            updateCart();
+            openCart();
+        };
+
+        window.updateQuantity = function(id, change) {
+            const itemIndex = cart.findIndex(i => i.id === id);
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += change;
+                if (cart[itemIndex].quantity <= 0) {
+                    cart.splice(itemIndex, 1);
+                }
+            }
+            updateCart();
+        };
+
+        function updateCart() {
+            // Update UI
+            cartItemsContainer.innerHTML = '';
+            let subtotal = 0;
+            let totalItems = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.appendChild(emptyCartMsg);
+                emptyCartMsg.classList.remove('hidden');
+                checkoutBtn.disabled = true;
+                deliveryPriceEl.textContent = '₹0.00';
+            } else {
+                emptyCartMsg.classList.add('hidden');
+                checkoutBtn.disabled = false;
+                deliveryPriceEl.textContent = `₹${DELIVERY_FEE.toFixed(2)}`;
+
+                cart.forEach(item => {
+                    subtotal += item.price * item.quantity;
+                    totalItems += item.quantity;
+
+                    const cartItemEl = document.createElement('div');
+                    cartItemEl.className = 'flex items-center gap-4 bg-white p-3 rounded-lg border';
+                    cartItemEl.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
+                        <div class="flex-1">
+                            <h4 class="text-sm font-bold text-gray-800">${item.name}</h4>
+                            <div class="text-orange-500 font-medium">₹${item.price}</div>
+                            <div class="flex items-center gap-3 mt-2">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200">-</button>
+                                <span class="text-sm font-medium w-4 text-center">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200">+</button>
+                            </div>
+                        </div>
+                        <div class="text-right font-bold text-gray-700">₹${item.price * item.quantity}</div>
+                    `;
+                    cartItemsContainer.appendChild(cartItemEl);
+                });
+            }
+
+            // Update Totals
+            const total = subtotal > 0 ? subtotal + DELIVERY_FEE : 0;
+            subtotalPriceEl.textContent = `₹${subtotal.toFixed(2)}`;
+            totalPriceEl.textContent = `₹${total.toFixed(2)}`;
+            
+            // Update Badge
+            if (totalItems > 0) {
+                cartBadge.textContent = totalItems;
+                cartBadge.classList.remove('hidden');
+            } else {
+                cartBadge.classList.add('hidden');
+            }
+        }
+
+        // UI Toggles
+        function openCart() {
+            cartSidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden');
+        }
+
+        function closeCart() {
+            cartSidebar.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            cartBtn.addEventListener('click', openCart);
+            closeCartBtn.addEventListener('click', closeCart);
+            overlay.addEventListener('click', closeCart);
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // Reset active state
+                    filterBtns.forEach(b => {
+                        b.classList.remove('bg-orange-500', 'text-white', 'active');
+                        b.classList.add('bg-white', 'text-gray-600');
+                    });
+                    
+                    // Set new active state
+                    e.target.classList.remove('bg-white', 'text-gray-600');
+                    e.target.classList.add('bg-orange-500', 'text-white', 'active');
+                    
+                    renderMenu(e.target.dataset.category);
+                });
+            });
+
+            checkoutBtn.addEventListener('click', () => {
+                closeCart();
+                successModal.classList.remove('hidden');
+                successModal.classList.add('flex');
+                
+                // Clear cart after successful checkout
+                cart = [];
+                updateCart();
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                successModal.classList.add('hidden');
+                successModal.classList.remove('flex');
+            });
+        }
+
+        // Boot up
+        init();
+    </script>
+</body>
+</html>
