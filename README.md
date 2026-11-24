@@ -36,11 +36,11 @@ User-Friendly Navigation: Clean header, smooth scrolling sections, and straightf
 
 🛠️ Technologies Used
 
-HTML5 – Semantic page structure and content layout
+HTML – Semantic page structure and content layout
 
-CSS3 – Custom styling, animations, and visual design
+CSS – Custom styling, animations, and visual design
 
-Bootstrap 5 – Responsive grid system and pre-built UI components
+Bootstrap – Responsive grid system and pre-built UI components
 
 JavaScript (ES6) & jQuery – DOM manipulation, interactive cart/order logic, and form validation
 
@@ -74,7 +74,7 @@ cd online-food-delivery-system
 
 Open in browser
 
-Open index.html directly in any modern web browser (Chrome, Edge, Firefox), or
+Open online food delivary system.html directly in any modern web browser (Chrome, Edge, Firefox), or
 
 Open the folder in VS Code and launch it using the Live Server extension.
 
@@ -91,10 +91,9 @@ Integrate a backend server (Node.js / PHP) and database (MySQL / MongoDB) for pe
 
 Add real-time order tracking and online payment gateway integration.
 
-Implement user authentication (Login / Sign Up).
 
 👤 Author
 
-Your Name – Internet & Web Technology Student
+Your Name –Prasun Kumar Roy
 
-GitHub: @your-username
+GitHub: prasunroy89056-sketch
